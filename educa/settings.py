@@ -10,24 +10,39 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-from pathlib import Path
+import logging
 import os
+from pathlib import Path
+
+from decouple import Csv, config
+
+logging.basicConfig(level=logging.INFO)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+logger = logging.getLogger(__name__)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-vhj#4j4p$!1+#z_j=z=j@(+t&!mo2_esg)3uk3%cik4m3qxik)"
+SECRET_KEY = config(
+    "SECRET_KEY",
+    cast=str,
+    default="django-insecure-vhj#4j4p$!1+#z_j=z=j@(+t&!mo2_esg)3uk3%cik4m3qxik)",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", cast=bool, default=False)
+logger.info(f"DEBUG: {DEBUG}")
 
-ALLOWED_HOSTS: list[str] = ["*"]
 
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv(), default="")
+logger.info(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")
+
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", cast=Csv(), default="")
+logger.info(f"CSRF_TRUSTED_ORIGINS: {CSRF_TRUSTED_ORIGINS}")
 
 # Application definition
 

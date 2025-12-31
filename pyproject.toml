@@ -16,4 +16,64 @@ dev = [
     "mypy>=1.19.1",
     "pre-commit>=4.5.1",
     "ruff>=0.14.10",
+    "pytest>=8.0.0",
+    "pytest-django>=4.11.1",
 ]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "N",      # pep8-naming
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+]
+
+ignore = [
+    "E501",   # line too long (handled by formatter)
+]
+
+
+
+[tool.ruff.lint.isort]
+known-first-party = ["clgc_web"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_redundant_casts = true
+warn_unused_ignores = true
+check_untyped_defs = true
+disallow_untyped_defs = false # Crucial for gradual typing
+disallow_any_unimported = true
+no_implicit_optional = true
+
+plugins = ["mypy_django_plugin.main"]
+
+[tool.django-stubs]  # <-- New section for plugin-specific config
+django_settings_module = "educa.settings"
+strict_settings = false
+
+[[tool.mypy.overrides]]
+module = "decouple"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "django.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "celery.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "taggit.*"
+ignore_missing_imports = true
+follow_untyped_imports = true
